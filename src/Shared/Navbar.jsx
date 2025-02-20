@@ -16,7 +16,7 @@ const Navbar = () => {
     <>
 
       {/*<!-- Header --> */}
-      <header className={`relative z-20 w-full border-b border-slate-200 bg-white/90 shadow-slate-700/5 `}>
+      {/* <header className={`relative z-20 w-full border-b border-slate-200 bg-white/90 shadow-slate-700/5 `}> */}
         <div className="relative mx-auto max-w-full px-6 lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[96rem]">
           <nav className="flex h-[5.5rem] items-stretch justify-between font-medium text-slate-700">
             {/* Logo */}
