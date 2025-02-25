@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import images from "../assets/images";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Moon, Sun } from 'lucide-react'; // Import icons for theme toggle
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
 
   const navLinks = [
     { path: "/", label: "Dashboard", icon: "https://img.icons8.com/?size=100&id=PO8vxejgExcL&format=png&color=000000" },
@@ -12,16 +14,37 @@ const Sidebar = () => {
     { path: "/attendance", label: "Attendance", icon: "https://img.icons8.com/?size=100&id=9zf2yAg95Sza&format=png&color=000000" },
   ];
 
-  // Mock user data - replace with your actual user data
-  const user = {
-    name: "John Doe",
-    profilePic: images?.image?.profile || "/placeholder.svg?height=40&width=40"
+  // Initialize theme from localStorage or default to dark mode
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === "dark");
+    } else {
+      // Default to dark mode if no preference is saved
+      setIsDarkMode(true);
+    }
+  }, []);
+
+  // Apply theme changes to document
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    // Save theme preference to localStorage
+    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+  }, [isDarkMode]);
+
+  // Toggle theme function
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-col dark:bg-gray-900">
       {/* Mobile Header - Always visible on mobile */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white h-16 border-b border-slate-200 flex items-center px-4 shadow-sm">
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white dark:bg-gray-800 h-16 border-b border-slate-200 dark:border-gray-700 flex items-center px-4 shadow-sm">
         {/* Hamburger Button */}
         <button
           className="p-2 rounded-md"
@@ -30,17 +53,17 @@ const Sidebar = () => {
         >
           <div className="w-6 flex flex-col gap-1">
             <span
-              className={`block h-0.5 w-6 bg-slate-900 transform transition-all duration-300 ${
+              className={`block h-0.5 w-6 bg-slate-900 dark:bg-white transform transition-all duration-300 ${
                 isSidebarOpen ? "rotate-45 translate-y-1.5" : ""
               }`}
             ></span>
             <span
-              className={`block h-0.5 w-6 bg-slate-900 transition-all duration-300 ${
+              className={`block h-0.5 w-6 bg-slate-900 dark:bg-white transition-all duration-300 ${
                 isSidebarOpen ? "opacity-0" : ""
               }`}
             ></span>
             <span
-              className={`block h-0.5 w-6 bg-slate-900 transform transition-all duration-300 ${
+              className={`block h-0.5 w-6 bg-slate-900 dark:bg-white transform transition-all duration-300 ${
                 isSidebarOpen ? "-rotate-45 -translate-y-1.5" : ""
               }`}
             ></span>
@@ -55,35 +78,36 @@ const Sidebar = () => {
         {/* Profile Picture */}
         <div className="flex items-center">
           <img
-            src={user.profilePic || "/placeholder.svg"}
+            src={images?.image?.logo || "/placeholder.svg"}
             alt="Profile"
-            className="h-10 w-10 rounded-full border-2 border-slate-200"
+            className="h-10 w-10 rounded-full border-2 border-slate-200 dark:border-gray-700"
           />
         </div>
       </header>
-
-      {/* Desktop Header - Only visible on desktop */}
-      <header className="hidden lg:flex fixed top-0 left-64 right-0 z-20 bg-white h-24 border-b border-slate-200 items-center justify-end px-6 shadow-sm">
-        <div className="flex items-center gap-3">
-          <img
-            src={user.profilePic || "/placeholder.svg"}
-            alt="Profile"
-            className="h-10 w-10 rounded-full border-2 border-slate-200"
-          />
-        </div>
-      </header>
-
       {/* Sidebar */}
       <div
-        className={`bg-white fixed top-0 lg:top-0 h-screen w-64 transform transition-transform duration-300 ease-in-out border-r border-slate-200 z-40 flex flex-col ${
+        className={`bg-white dark:bg-gray-800 fixed top-0 lg:top-0 h-screen w-64 transform transition-transform duration-300 ease-in-out border-r border-slate-200 dark:border-gray-700 z-40 flex flex-col ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
         {/* Logo Section */}
-        <div className="h-24 border-b border-slate-200 flex items-center px-6">
+        <div className="h-24 border-b border-slate-200 dark:border-gray-700 flex items-center justify-between px-6">
           <Link to="/" className="flex items-center gap-2">
             <img src={images?.image?.logo || "/placeholder.svg"} alt="logo" className="h-20" />
           </Link>
+          
+          {/* Mobile Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="lg:hidden p-2 rounded-full bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-gray-200"
+            aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {isDarkMode ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </button>
         </div>
 
         {/* Navigation Links */}
@@ -95,13 +119,13 @@ const Sidebar = () => {
                   to={path}
                   className={`flex items-center px-6 py-3 text-sm transition-colors duration-300 ${
                     location.pathname === path
-                      ? "text-[#9e1c21] font-semibold bg-red-50"
-                      : "text-slate-700 hover:bg-slate-50"
+                      ? "text-[#9e1c21] dark:text-red-400 font-semibold bg-red-50 dark:bg-red-900/20"
+                      : "text-slate-700 dark:text-gray-200 hover:bg-slate-50 dark:hover:bg-gray-700"
                   }`}
                   onClick={() => setIsSidebarOpen(false)}
                 >
                   <span className="mr-3">
-                    <img src={icon || "/placeholder.svg"} alt="" className="h-5" />
+                    <img src={icon || "/placeholder.svg"} alt="" className="h-5 dark:invert" />
                   </span>
                   <span>{label}</span>
                 </Link>
@@ -111,9 +135,9 @@ const Sidebar = () => {
         </nav>
 
         {/* Bottom Buttons Section */}
-        <div className="border-t border-slate-200 p-4 space-y-3">
+        <div className="border-t border-slate-200 dark:border-gray-700 p-4 space-y-3">
           {/* App Download Button */}
-          <button className="inline-flex w-full h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-emerald-50 px-6 text-sm font-medium tracking-wide text-emerald-500 transition duration-300 hover:bg-emerald-100 hover:text-emerald-600 focus:bg-emerald-200 focus:text-emerald-700 focus-visible:outline-none">
+          <button className="inline-flex w-full h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-emerald-50 dark:bg-emerald-900/20 px-6 text-sm font-medium tracking-wide text-emerald-500 dark:text-emerald-400 transition duration-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-300 focus:bg-emerald-200 focus:text-emerald-700 focus-visible:outline-none">
             <span className="relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -139,7 +163,7 @@ const Sidebar = () => {
               // Add your logout logic here
               console.log("Logout clicked");
             }}
-            className="inline-flex w-full h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-red-50 px-6 text-sm font-medium tracking-wide text-red-500 transition duration-300 hover:bg-red-100 hover:text-red-600 focus:bg-red-200 focus:text-red-700 focus-visible:outline-none"
+            className="inline-flex w-full h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-red-50 dark:bg-red-900/20 px-6 text-sm font-medium tracking-wide text-red-500 dark:text-red-400 transition duration-300 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-300 focus:bg-red-200 focus:text-red-700 focus-visible:outline-none"
           >
             <span className="relative">
               <svg
@@ -161,16 +185,10 @@ const Sidebar = () => {
           </button>
         </div>
       </div>
-
-      {/* Main Content */}
-      <div className="flex-1 lg:ml-64 mt-16 p-4">
-        {/* Your page content will go here */}
-      </div>
-
       {/* Overlay for mobile */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-[#c5c5c563] bg-opacity-50 lg:hidden z-30"
+          className="fixed inset-0 bg-[#c5c5c563] dark:bg-black/50 bg-opacity-50 lg:hidden z-30"
           onClick={() => setIsSidebarOpen(false)}
         ></div>
       )}
