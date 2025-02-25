@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
 import images from "../assets/images";
-import { useState, useEffect } from "react";
-import { Moon, Sun } from 'lucide-react'; // Import icons for theme toggle
+import { useState } from "react";
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
 
   const navLinks = [
     { path: "/", label: "Dashboard", icon: "https://img.icons8.com/?size=100&id=PO8vxejgExcL&format=png&color=000000" },
@@ -14,32 +12,7 @@ const Sidebar = () => {
     { path: "/attendance", label: "Attendance", icon: "https://img.icons8.com/?size=100&id=9zf2yAg95Sza&format=png&color=000000" },
   ];
 
-  // Initialize theme from localStorage or default to dark mode
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      setIsDarkMode(savedTheme === "dark");
-    } else {
-      // Default to dark mode if no preference is saved
-      setIsDarkMode(true);
-    }
-  }, []);
 
-  // Apply theme changes to document
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-    // Save theme preference to localStorage
-    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-  }, [isDarkMode]);
-
-  // Toggle theme function
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
 
   return (
     <div className="flex flex-col dark:bg-gray-900">
@@ -53,24 +26,21 @@ const Sidebar = () => {
         >
           <div className="w-6 flex flex-col gap-1">
             <span
-              className={`block h-0.5 w-6 bg-slate-900 dark:bg-white transform transition-all duration-300 ${
-                isSidebarOpen ? "rotate-45 translate-y-1.5" : ""
-              }`}
+              className={`block h-0.5 w-6 bg-slate-900 dark:bg-white transform transition-all duration-300 ${isSidebarOpen ? "rotate-45 translate-y-1.5" : ""
+                }`}
             ></span>
             <span
-              className={`block h-0.5 w-6 bg-slate-900 dark:bg-white transition-all duration-300 ${
-                isSidebarOpen ? "opacity-0" : ""
-              }`}
+              className={`block h-0.5 w-6 bg-slate-900 dark:bg-white transition-all duration-300 ${isSidebarOpen ? "opacity-0" : ""
+                }`}
             ></span>
             <span
-              className={`block h-0.5 w-6 bg-slate-900 dark:bg-white transform transition-all duration-300 ${
-                isSidebarOpen ? "-rotate-45 -translate-y-1.5" : ""
-              }`}
+              className={`block h-0.5 w-6 bg-slate-900 dark:bg-white transform transition-all duration-300 ${isSidebarOpen ? "-rotate-45 -translate-y-1.5" : ""
+                }`}
             ></span>
           </div>
         </button>
 
-        {/* Logo */}
+        {/* Logo mobile screen */}
         <Link to="/" className="flex items-center mx-auto">
           <img src={images?.image?.logo || "/placeholder.svg"} alt="logo" className="h-10" />
         </Link>
@@ -86,29 +56,16 @@ const Sidebar = () => {
       </header>
       {/* Sidebar */}
       <div
-        className={`bg-white dark:bg-gray-800 fixed top-0 lg:top-0 h-screen w-64 transform transition-transform duration-300 ease-in-out border-r border-slate-200 dark:border-gray-700 z-40 flex flex-col ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        }`}
+        className={`bg-white dark:bg-gray-800 fixed top-0 lg:top-0 h-screen w-64 transform transition-transform duration-300 ease-in-out border-r border-slate-200 dark:border-gray-700 z-40 flex flex-col ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          }`}
       >
         {/* Logo Section */}
-        <div className="h-24 border-b border-slate-200 dark:border-gray-700 flex items-center justify-between px-6">
+        <div className="h-24 border-b border-slate-200 dark:border-gray-700 flex items-center justify-center px-6">
           <Link to="/" className="flex items-center gap-2">
             <img src={images?.image?.logo || "/placeholder.svg"} alt="logo" className="h-20" />
           </Link>
-          
-          {/* Mobile Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            className="lg:hidden p-2 rounded-full bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-gray-200"
-            aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-          >
-            {isDarkMode ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-          </button>
         </div>
+
 
         {/* Navigation Links */}
         <nav className="py-6 flex-1">
@@ -117,11 +74,10 @@ const Sidebar = () => {
               <li key={path}>
                 <Link
                   to={path}
-                  className={`flex items-center px-6 py-3 text-sm transition-colors duration-300 ${
-                    location.pathname === path
+                  className={`flex items-center px-6 py-3 text-sm transition-colors duration-300 ${location.pathname === path
                       ? "text-[#9e1c21] dark:text-red-400 font-semibold bg-red-50 dark:bg-red-900/20"
                       : "text-slate-700 dark:text-gray-200 hover:bg-slate-50 dark:hover:bg-gray-700"
-                  }`}
+                    }`}
                   onClick={() => setIsSidebarOpen(false)}
                 >
                   <span className="mr-3">
@@ -158,7 +114,7 @@ const Sidebar = () => {
           </button>
 
           {/* Logout Button */}
-          <button 
+          <button
             onClick={() => {
               // Add your logout logic here
               console.log("Logout clicked");
