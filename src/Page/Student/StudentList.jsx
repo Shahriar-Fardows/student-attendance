@@ -152,18 +152,16 @@ export default function StudentList() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className=" ">
       {/* Header */}
-      <div className="bg-white shadow-md">
-        <div className="container mx-auto px-4 py-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Student Management System</h1>
-          <p className="text-gray-600 mt-1">Manage and view student information</p>
+      <div className="space-y-6 py-5">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-800">Student List</h1>
         </div>
       </div>
-
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto lg:px-4">
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="lg:bg-white lg:rounded-lg lg:shadow-md lg:p-4 lg:mb-6 py-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Search</label>
@@ -171,7 +169,7 @@ export default function StudentList() {
                 type="text"
                 name="search"
                 placeholder="Search by ID or Name..."
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="peer h-10 w-full rounded border border-slate-200 px-4 pr-12 text-sm text-slate-500 outline-none transition-all autofill:bg-white invalid:border-pink-500 invalid:text-pink-500 focus:border-emerald-500 focus:outline-none invalid:focus:border-pink-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
                 onChange={handleFilterChange}
               />
             </div>
@@ -179,7 +177,7 @@ export default function StudentList() {
               <label className="text-sm font-medium text-gray-700">Department</label>
               <select
                 name="department"
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="peer h-10 w-full rounded border border-slate-200 px-4 pr-12 text-sm text-slate-500 outline-none transition-all autofill:bg-white invalid:border-pink-500 invalid:text-pink-500 focus:border-emerald-500 focus:outline-none invalid:focus:border-pink-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
                 onChange={handleFilterChange}
               >
                 <option value="">All Departments</option>
@@ -194,7 +192,7 @@ export default function StudentList() {
               <label className="text-sm font-medium text-gray-700">Semester</label>
               <select
                 name="semester"
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="peer h-10 w-full rounded border border-slate-200 px-4 pr-12 text-sm text-slate-500 outline-none transition-all autofill:bg-white invalid:border-pink-500 invalid:text-pink-500 focus:border-emerald-500 focus:outline-none invalid:focus:border-pink-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
                 onChange={handleFilterChange}
               >
                 <option value="">All Semesters</option>
@@ -209,7 +207,7 @@ export default function StudentList() {
               <label className="text-sm font-medium text-gray-700">Section</label>
               <select
                 name="section"
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="peer h-10 w-full rounded border border-slate-200 px-4 pr-12 text-sm text-slate-500 outline-none transition-all autofill:bg-white invalid:border-pink-500 invalid:text-pink-500 focus:border-emerald-500 focus:outline-none invalid:focus:border-pink-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
                 onChange={handleFilterChange}
               >
                 <option value="">All Sections</option>

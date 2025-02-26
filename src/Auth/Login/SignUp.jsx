@@ -1,8 +1,13 @@
 // register-form.jsx
-import  { useState } from "react";
+import { useState } from "react";
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import PropTypes from "prop-types";
-export default function RegisterForm({ onNavigate }) {
+import useAuthContext from "../Context/useAuthContext";
+import Swal from "sweetalert2";
+import { Contexts } from "../Context/Context";
+
+const RegisterForm = ({ onNavigate }) => {
+  const { createUser } = useAuthContext(Contexts);
   const [step, setStep] = useState(1); // Step 1: Basic Info, Step 2: Security
   const [formData, setFormData] = useState({
     name: "",
@@ -12,19 +17,19 @@ export default function RegisterForm({ onNavigate }) {
     confirmPassword: "",
     pin: "",
   });
-  
+
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     // For PIN field, only allow numbers and max 6 digits
     if (name === "pin") {
       if (!/^\d*$/.test(value) || value.length > 6) return;
     }
-    
+
     setFormData({
       ...formData,
       [name]: value,
@@ -33,73 +38,102 @@ export default function RegisterForm({ onNavigate }) {
 
   const validateStep1 = () => {
     const newErrors = {};
-    
+
     if (!formData.name.trim()) newErrors.name = "Name is required";
-    
+
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email is invalid";
     }
-    
+
     if (!formData.subject) newErrors.subject = "Subject is required";
-    
+
     return newErrors;
   };
 
   const validateStep2 = () => {
     const newErrors = {};
-    
+
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
     }
-    
+
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
-    
+
     if (!formData.pin) {
       newErrors.pin = "PIN is required";
     } else if (formData.pin.length !== 6) {
       newErrors.pin = "PIN must be exactly 6 digits";
     }
-    
+
     return newErrors;
   };
 
   const handleStep1Submit = (e) => {
     e.preventDefault();
     const newErrors = validateStep1();
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    
+
     setStep(2);
   };
 
   const handleStep2Submit = (e) => {
     e.preventDefault();
     const newErrors = validateStep2();
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    
+
     // Here you would typically send the data to your backend
     console.log("Registration data:", formData);
-    
-    // For demo purposes, store in localStorage
-    const teachers = JSON.parse(localStorage.getItem("teachers") || "[]");
-    teachers.push(formData);
-    localStorage.setItem("teachers", JSON.stringify(teachers));
-    
-    alert("Registration successful! You can now login.");
-    onNavigate("login");
+    createUser(formData.email, formData.password)
+      .then(() => {
+        fetch(`https://pubstudent-server.vercel.app/register-teacher`, {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject,
+            pin: formData.pin,
+          }),
+        })
+          .then(res => res.json())
+          .then(data => {
+            console.log(data);
+            if (data.insertedId) {
+              Swal.fire({
+                title: 'Success!',
+                text: 'Registration successful',
+                icon: 'success',
+                confirmButtonText: 'Cool'
+              });
+              onNavigate("/");
+            }
+          })
+          .catch(error => console.error("Error:", error));
+      })
+      .catch((error) => {
+        Swal.fire({
+          title: 'Error!',
+          text: error.message,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+      });
   };
 
   RegisterForm.propTypes = {
@@ -109,7 +143,7 @@ export default function RegisterForm({ onNavigate }) {
   return (
     <div className="lg:bg-white lg:rounded-lg lg:shadow-lg lg:p-6">
       <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Teacher Registration</h2>
-      
+
       {step === 1 ? (
         <form onSubmit={handleStep1Submit} className="space-y-4">
           <div>
@@ -122,14 +156,13 @@ export default function RegisterForm({ onNavigate }) {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.name ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.name ? "border-red-500" : "border-gray-300"
+                }`}
               placeholder="Enter your full name"
             />
             {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
           </div>
-          
+
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
               Email Address
@@ -140,14 +173,13 @@ export default function RegisterForm({ onNavigate }) {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? "border-red-500" : "border-gray-300"
+                }`}
               placeholder="Enter your email"
             />
             {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
           </div>
-          
+
           <div>
             <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
               Subject
@@ -157,9 +189,8 @@ export default function RegisterForm({ onNavigate }) {
               name="subject"
               value={formData.subject}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.subject ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.subject ? "border-red-500" : "border-gray-300"
+                }`}
             >
               <option value="Math">Math</option>
               <option value="English">English</option>
@@ -168,14 +199,14 @@ export default function RegisterForm({ onNavigate }) {
             </select>
             {errors.subject && <p className="mt-1 text-sm text-red-500">{errors.subject}</p>}
           </div>
-          
+
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
           >
             Continue
           </button>
-          
+
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{" "}
@@ -201,9 +232,8 @@ export default function RegisterForm({ onNavigate }) {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.password ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="Create a password"
               />
               <button
@@ -220,7 +250,7 @@ export default function RegisterForm({ onNavigate }) {
             </div>
             {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
           </div>
-          
+
           <div>
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
               Confirm Password
@@ -232,9 +262,8 @@ export default function RegisterForm({ onNavigate }) {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.confirmPassword ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="Confirm your password"
               />
               <button
@@ -251,7 +280,7 @@ export default function RegisterForm({ onNavigate }) {
             </div>
             {errors.confirmPassword && <p className="mt-1 text-sm text-red-500">{errors.confirmPassword}</p>}
           </div>
-          
+
           <div>
             <label htmlFor="pin" className="block text-sm font-medium text-gray-700 mb-1">
               6-Digit PIN
@@ -263,14 +292,13 @@ export default function RegisterForm({ onNavigate }) {
               value={formData.pin}
               onChange={handleChange}
               maxLength={6}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.pin ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.pin ? "border-red-500" : "border-gray-300"
+                }`}
               placeholder="Create a 6-digit PIN"
             />
             {errors.pin && <p className="mt-1 text-sm text-red-500">{errors.pin}</p>}
           </div>
-          
+
           <div className="flex space-x-2">
             <button
               type="button"
@@ -291,3 +319,5 @@ export default function RegisterForm({ onNavigate }) {
     </div>
   );
 }
+
+export default RegisterForm;
