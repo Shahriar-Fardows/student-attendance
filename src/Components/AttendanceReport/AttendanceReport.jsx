@@ -229,7 +229,7 @@ const AttendanceReport = () => {
       </div>
 
       {/* Filter section at the top */}
-      <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
+      <div className="lg:bg-white lg:rounded-xl lg:shadow-md lg:overflow-hidden lg:p-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">Select Filters</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -312,8 +312,8 @@ const AttendanceReport = () => {
       {/* Student list and details section */}
       {selectedCourse && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1 bg-white rounded-xl shadow-md overflow-hidden">
-            <div className="p-6">
+          <div className="lg:col-span-1 lg:bg-white lg:rounded-xl lg:shadow-md lg:overflow-hidden">
+            <div className="lg:p-6">
               <h2 className="text-lg font-semibold text-gray-800 mb-4">Student List</h2>
 
               <div className="relative mb-4">
@@ -352,9 +352,9 @@ const AttendanceReport = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="lg:col-span-2 lg:bg-white lg:rounded-xl lg:shadow-md lg:overflow-hidden">
             {selectedStudent ? (
-              <div className="p-6">
+              <div className="lg:p-6">
                 <div className="flex items-center space-x-4 mb-6">
                   <div className="h-16 w-16 rounded-full bg-indigo-100 flex items-center justify-center">
                     <UserIcon className="h-8 w-8 text-indigo-600" />

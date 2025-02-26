@@ -41,18 +41,10 @@ const Sidebar = () => {
         </button>
 
         {/* Logo mobile screen */}
-        <Link to="/" className="flex items-center mx-auto">
-          <img src={images?.image?.logo || "/placeholder.svg"} alt="logo" className="h-10" />
+        <Link to="/" className="">
+          <img src={images?.image?.logo || "/placeholder.svg"} alt="logo" className="h-12" />
         </Link>
 
-        {/* Profile Picture */}
-        <div className="flex items-center">
-          <img
-            src={images?.image?.logo || "/placeholder.svg"}
-            alt="Profile"
-            className="h-10 w-10 rounded-full border-2 border-slate-200 dark:border-gray-700"
-          />
-        </div>
       </header>
       {/* Sidebar */}
       <div

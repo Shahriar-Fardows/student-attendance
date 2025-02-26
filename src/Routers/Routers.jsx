@@ -4,6 +4,8 @@ import ErrorPage from "../Error/ErrorPage";
 import Home from "../Home/Home";
 import LoadingSpinner from "../Shared/LoadingSpinner";
 import Register from "../Page/Register/Register";
+import Profile from "../Page/Profile/Profile";
+import StudentList from "../Page/Student/StudentList";
 
 // Define the wait function
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -26,6 +28,22 @@ const Routers = createBrowserRouter([
                 element: (
                   <Suspense fallback={<LoadingSpinner />}>
                     <Home />
+                  </Suspense>
+                ),
+            },
+            {
+                path: "/profile",
+                element: (
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Profile />
+                  </Suspense>
+                ),
+            },
+            {
+                path: "/student_list",
+                element: (
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <StudentList />
                   </Suspense>
                 ),
             },
