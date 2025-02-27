@@ -1,13 +1,13 @@
-// register-form.jsx
 import { useState } from "react";
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import PropTypes from "prop-types";
 import useAuthContext from "../Context/useAuthContext";
 import Swal from "sweetalert2";
-import { Contexts } from "../Context/Context";
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm = ({ onNavigate }) => {
-  const { createUser } = useAuthContext(Contexts);
+  const navigate = useNavigate();
+  const { createUser } = useAuthContext();
   const [step, setStep] = useState(1); // Step 1: Basic Info, Step 2: Security
   const [formData, setFormData] = useState({
     name: "",
@@ -34,6 +34,14 @@ const RegisterForm = ({ onNavigate }) => {
       ...formData,
       [name]: value,
     });
+    
+    // Clear error for this field when user types
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: null
+      });
+    }
   };
 
   const validateStep1 = () => {
@@ -61,7 +69,9 @@ const RegisterForm = ({ onNavigate }) => {
       newErrors.password = "Password must be at least 6 characters";
     }
 
-    if (formData.password !== formData.confirmPassword) {
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password";
+    } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
@@ -83,23 +93,24 @@ const RegisterForm = ({ onNavigate }) => {
       return;
     }
 
+    setErrors({});
     setStep(2);
   };
 
   const handleStep2Submit = (e) => {
     e.preventDefault();
     const newErrors = validateStep2();
-
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
-    // Here you would typically send the data to your backend
-    console.log("Registration data:", formData);
+  
+    console.log("Form Data:", formData);
+    
     createUser(formData.email, formData.password)
       .then(() => {
-        fetch(`https://pubstudent-server.vercel.app/register-teacher`, {
+        return fetch("https://sheetdb.io/api/v1/euy38wx992nlx", {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",
@@ -110,38 +121,42 @@ const RegisterForm = ({ onNavigate }) => {
             subject: formData.subject,
             pin: formData.pin,
           }),
-        })
-          .then(res => res.json())
-          .then(data => {
-            console.log(data);
-            if (data.insertedId) {
-              Swal.fire({
-                title: 'Success!',
-                text: 'Registration successful',
-                icon: 'success',
-                confirmButtonText: 'Cool'
-              });
-              onNavigate("/");
-            }
-          })
-          .catch(error => console.error("Error:", error));
+        });
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Failed to register teacher");
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log("Server Response:", data);
+        if (data) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Registration successful',
+            icon: 'success',
+            confirmButtonText: 'Cool'
+          }).then(() => {
+            navigate("/"); 
+          });
+        } else {
+          throw new Error("No teacherId received");
+        }
       })
       .catch((error) => {
+        console.error("Error:", error);
         Swal.fire({
           title: 'Error!',
-          text: error.message,
+          text: error.message || "Something went wrong",
           icon: 'error',
           confirmButtonText: 'Ok'
         });
       });
   };
 
-  RegisterForm.propTypes = {
-    onNavigate: PropTypes.func.isRequired,
-  };
-
   return (
-    <div className="lg:bg-white lg:rounded-lg lg:shadow-lg lg:p-6">
+    <div className="lg:bg-white lg:rounded-lg lg:shadow-lg lg:p-6 p-4">
       <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Teacher Registration</h2>
 
       {step === 1 ? (
@@ -156,8 +171,9 @@ const RegisterForm = ({ onNavigate }) => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.name ? "border-red-500" : "border-gray-300"
-                }`}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.name ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="Enter your full name"
             />
             {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
@@ -173,8 +189,9 @@ const RegisterForm = ({ onNavigate }) => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? "border-red-500" : "border-gray-300"
-                }`}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.email ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="Enter your email"
             />
             {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
@@ -189,8 +206,9 @@ const RegisterForm = ({ onNavigate }) => {
               name="subject"
               value={formData.subject}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.subject ? "border-red-500" : "border-gray-300"
-                }`}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.subject ? "border-red-500" : "border-gray-300"
+              }`}
             >
               <option value="Math">Math</option>
               <option value="English">English</option>
@@ -211,6 +229,7 @@ const RegisterForm = ({ onNavigate }) => {
             <p className="text-sm text-gray-600">
               Already have an account?{" "}
               <button
+                type="button"
                 onClick={() => onNavigate("login")}
                 className="text-blue-600 hover:underline focus:outline-none"
               >
@@ -232,8 +251,9 @@ const RegisterForm = ({ onNavigate }) => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.password ? "border-red-500" : "border-gray-300"
-                  }`}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="Create a password"
               />
               <button
@@ -242,9 +262,9 @@ const RegisterForm = ({ onNavigate }) => {
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
-                  <EyeOffIcon className="h-5 w-5 text-gray-400" />
+                  <EyeOff className="h-5 w-5 text-gray-400" />
                 ) : (
-                  <EyeIcon className="h-5 w-5 text-gray-400" />
+                  <Eye className="h-5 w-5 text-gray-400" />
                 )}
               </button>
             </div>
@@ -262,8 +282,9 @@ const RegisterForm = ({ onNavigate }) => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
-                  }`}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  errors.confirmPassword ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="Confirm your password"
               />
               <button
@@ -272,9 +293,9 @@ const RegisterForm = ({ onNavigate }) => {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 {showConfirmPassword ? (
-                  <EyeOffIcon className="h-5 w-5 text-gray-400" />
+                  <EyeOff className="h-5 w-5 text-gray-400" />
                 ) : (
-                  <EyeIcon className="h-5 w-5 text-gray-400" />
+                  <Eye className="h-5 w-5 text-gray-400" />
                 )}
               </button>
             </div>
@@ -292,8 +313,9 @@ const RegisterForm = ({ onNavigate }) => {
               value={formData.pin}
               onChange={handleChange}
               maxLength={6}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.pin ? "border-red-500" : "border-gray-300"
-                }`}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.pin ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="Create a 6-digit PIN"
             />
             {errors.pin && <p className="mt-1 text-sm text-red-500">{errors.pin}</p>}
@@ -318,6 +340,10 @@ const RegisterForm = ({ onNavigate }) => {
       )}
     </div>
   );
-}
+};
+
+RegisterForm.propTypes = {
+  onNavigate: PropTypes.func.isRequired,
+};
 
 export default RegisterForm;

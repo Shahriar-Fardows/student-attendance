@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import images from "../assets/images";
 import { useState } from "react";
+import { Contexts } from "../Auth/Context/Context";
+import useAuthContext from "../Auth/Context/useAuthContext";
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const {LogOut} = useAuthContext(Contexts);
 
   const navLinks = [
     { path: "/", label: "Dashboard", icon: "https://img.icons8.com/?size=100&id=PO8vxejgExcL&format=png&color=000000" },
@@ -107,10 +110,7 @@ const Sidebar = () => {
 
           {/* Logout Button */}
           <button
-            onClick={() => {
-              // Add your logout logic here
-              console.log("Logout clicked");
-            }}
+            onClick={() => {LogOut()}}
             className="inline-flex w-full h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-red-50 dark:bg-red-900/20 px-6 text-sm font-medium tracking-wide text-red-500 dark:text-red-400 transition duration-300 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-300 focus:bg-red-200 focus:text-red-700 focus-visible:outline-none"
           >
             <span className="relative">

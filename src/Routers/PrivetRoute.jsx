@@ -7,7 +7,7 @@ import { Navigate } from 'react-router-dom';
 const PrivetRoute = ({ children }) => {
 
     const { user } = useAuthContext(Contexts);
-    console.log(user)
+
     if (user) {
         return children;
     }
