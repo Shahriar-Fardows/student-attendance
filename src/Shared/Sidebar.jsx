@@ -6,7 +6,7 @@ import useAuthContext from "../Auth/Context/useAuthContext";
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const {LogOut} = useAuthContext(Contexts);
+  const { LogOut } = useAuthContext(Contexts);
 
   const navLinks = [
     { path: "/", label: "Dashboard", icon: "https://img.icons8.com/?size=100&id=PO8vxejgExcL&format=png&color=000000" },
@@ -70,8 +70,8 @@ const Sidebar = () => {
                 <Link
                   to={path}
                   className={`flex items-center px-6 py-3 text-sm transition-colors duration-300 ${location.pathname === path
-                      ? "text-[#9e1c21] dark:text-red-400 font-semibold bg-red-50 dark:bg-red-900/20"
-                      : "text-slate-700 dark:text-gray-200 hover:bg-slate-50 dark:hover:bg-gray-700"
+                    ? "text-[#9e1c21] dark:text-red-400 font-semibold bg-red-50 dark:bg-red-900/20"
+                    : "text-slate-700 dark:text-gray-200 hover:bg-slate-50 dark:hover:bg-gray-700"
                     }`}
                   onClick={() => setIsSidebarOpen(false)}
                 >
@@ -88,29 +88,25 @@ const Sidebar = () => {
         {/* Bottom Buttons Section */}
         <div className="border-t border-slate-200 dark:border-gray-700 p-4 space-y-3">
           {/* App Download Button */}
-          <button className="inline-flex w-full h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-emerald-50 dark:bg-emerald-900/20 px-6 text-sm font-medium tracking-wide text-emerald-500 dark:text-emerald-400 transition duration-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-300 focus:bg-emerald-200 focus:text-emerald-700 focus-visible:outline-none">
-            <span className="relative">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
-                />
-              </svg>
-            </span>
-            <span>App Download</span>
-          </button>
+
+         
+          <a href="/assets/67c0c15d8fe2020d3a09b118_v1.0.0-n1-com.ALHtHOFEduBk.natively-v1.0.0-n1.apk" download>
+            <button className="inline-flex w-full h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-emerald-50 dark:bg-emerald-900/20 px-6 text-sm font-medium tracking-wide text-emerald-500 dark:text-emerald-400 transition duration-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-300 focus:bg-emerald-200 focus:text-emerald-700 focus-visible:outline-none">
+              <span className="relative">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                </svg>
+              </span>
+              <span>App Download</span>
+            </button>
+          </a>
+          
+
+
 
           {/* Logout Button */}
           <button
-            onClick={() => {LogOut()}}
+            onClick={() => { LogOut() }}
             className="inline-flex w-full h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-red-50 dark:bg-red-900/20 px-6 text-sm font-medium tracking-wide text-red-500 dark:text-red-400 transition duration-300 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-300 focus:bg-red-200 focus:text-red-700 focus-visible:outline-none"
           >
             <span className="relative">
