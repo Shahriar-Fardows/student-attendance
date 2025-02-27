@@ -75,12 +75,6 @@ const RegisterForm = ({ onNavigate }) => {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
-    if (!formData.pin) {
-      newErrors.pin = "PIN is required";
-    } else if (formData.pin.length !== 6) {
-      newErrors.pin = "PIN must be exactly 6 digits";
-    }
-
     return newErrors;
   };
 
@@ -119,7 +113,6 @@ const RegisterForm = ({ onNavigate }) => {
             name: formData.name,
             email: formData.email,
             subject: formData.subject,
-            pin: formData.pin,
           }),
         });
       })
@@ -300,25 +293,6 @@ const RegisterForm = ({ onNavigate }) => {
               </button>
             </div>
             {errors.confirmPassword && <p className="mt-1 text-sm text-red-500">{errors.confirmPassword}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="pin" className="block text-sm font-medium text-gray-700 mb-1">
-              6-Digit PIN
-            </label>
-            <input
-              type="password"
-              id="pin"
-              name="pin"
-              value={formData.pin}
-              onChange={handleChange}
-              maxLength={6}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.pin ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder="Create a 6-digit PIN"
-            />
-            {errors.pin && <p className="mt-1 text-sm text-red-500">{errors.pin}</p>}
           </div>
 
           <div className="flex space-x-2">

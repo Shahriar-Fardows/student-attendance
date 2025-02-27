@@ -10,7 +10,7 @@ const Sidebar = () => {
 
   const navLinks = [
     { path: "/", label: "Dashboard", icon: "https://img.icons8.com/?size=100&id=PO8vxejgExcL&format=png&color=000000" },
-    { path: "/profile", label: "Profile", icon: "https://img.icons8.com/?size=100&id=NqZQc8ORlO2Z&format=png&color=000000" },
+    // { path: "/profile", label: "Profile", icon: "https://img.icons8.com/?size=100&id=NqZQc8ORlO2Z&format=png&color=000000" },
     { path: "/student_list", label: "Student List", icon: "https://img.icons8.com/?size=100&id=fxJr4uPpcSrl&format=png&color=000000" },
     { path: "/attendance", label: "Attendance", icon: "https://img.icons8.com/?size=100&id=9zf2yAg95Sza&format=png&color=000000" },
   ];

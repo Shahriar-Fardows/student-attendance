@@ -4,7 +4,7 @@ import ErrorPage from "../Error/ErrorPage";
 import Home from "../Home/Home";
 import LoadingSpinner from "../Shared/LoadingSpinner";
 import Register from "../Page/Register/Register";
-import Profile from "../Page/Profile/Profile";
+// import Profile from "../Page/Profile/Profile";
 import StudentList from "../Page/Student/StudentList";
 import PrivetRoute from "./PrivetRoute";
 import AttendancePage from "../Page/Attendance/Attendance";
@@ -35,16 +35,16 @@ const Routers = createBrowserRouter([
                   </PrivetRoute>
                 ),
             },
-            {
-                path: "/profile",
-                element: (
-                  <PrivetRoute>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <Profile />
-                  </Suspense>
-                  </PrivetRoute>
-                ),
-            },
+            // {
+            //     path: "/profile",
+            //     element: (
+            //       <PrivetRoute>
+            //       <Suspense fallback={<LoadingSpinner />}>
+            //         <Profile />
+            //       </Suspense>
+            //       </PrivetRoute>
+            //     ),
+            // },
             {
                 path: "/student_list",
                 element: (

@@ -1,32 +1,47 @@
-// forgot-password.jsx
 import { useState } from "react";
 import PropTypes from "prop-types";
+import useAuthContext from "../Context/useAuthContext";
+import { Contexts } from "../Context/Context";
+import Swal from "sweetalert2";
 
 export default function ForgotPassword({ onNavigate }) {
+  const { forgotPassword } = useAuthContext(Contexts);
+  
+  // State hooks for email, error, and success
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    if (!email.trim()) {
+    const trimmedEmail = email.trim();
+
+    if (!trimmedEmail) {
       setError("Email is required");
       return;
     }
-    
+
     // Check if user exists
     const teachers = JSON.parse(localStorage.getItem("teachers") || "[]");
-    const user = teachers.find((t) => t.email === email);
-    
+    const user = teachers.find((t) => t.email === trimmedEmail);
+
     if (!user) {
       setError("No account found with this email address");
       return;
     }
-    
-    // In a real application, you would send a password reset email here
-    setSuccess(true);
-    setError("");
+
+    forgotPassword(trimmedEmail)
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Password reset instructions have been sent to your email.",
+        });
+        setSuccess(true);
+        setError("");
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
   };
 
   ForgotPassword.propTypes = {

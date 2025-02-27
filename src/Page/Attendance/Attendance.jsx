@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import Swal from "sweetalert2"
 
 const AttendancePage = () => {
     // State for storing API data
@@ -8,7 +9,6 @@ const AttendancePage = () => {
     const [attendanceData, setAttendanceData] = useState([])
     const [loading, setLoading] = useState(true)
     const [submitting, setSubmitting] = useState(false)
-    const [submitSuccess, setSubmitSuccess] = useState(false)
     const [submitError, setSubmitError] = useState(null)
 
     // State for filters
@@ -132,7 +132,12 @@ const AttendancePage = () => {
             })
 
             if (response.ok) {
-                setSubmitSuccess(true)
+                Swal.fire({
+                    icon: "success",
+                    title: "Attendance submitted successfully!",
+                    showConfirmButton: false,
+                    timer: 3000,
+                })
                 // Reset form after successful submission
                 setTimeout(() => {
                     setSelectedDepartment("")
@@ -140,7 +145,6 @@ const AttendancePage = () => {
                     setSelectedSection("")
                     setFilteredStudents([])
                     setAttendanceData([])
-                    setSubmitSuccess(false)
                 }, 3000)
             } else {
                 throw new Error("Failed to submit attendance data")
@@ -154,7 +158,7 @@ const AttendancePage = () => {
     }
 
     return (
-        <div className="min-h-screen lg:bg-gray-50 lg:py-8 sm:px-6 lg:px-8">
+        <div className="min-h-screen lg:py-8">
             <div>
                 {/* Header */}
                 <div className="mb-2 px-4">
@@ -374,32 +378,6 @@ const AttendancePage = () => {
                                             )}
                                         </button>
                                     </div>
-
-                                    {/* Success Message */}
-                                    {submitSuccess && (
-                                        <div className="mt-4 p-4 rounded-md bg-green-50 border border-green-200">
-                                            <div className="flex">
-                                                <div className="flex-shrink-0">
-                                                    <svg
-                                                        className="h-5 w-5 text-green-400"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
-                                                        aria-hidden="true"
-                                                    >
-                                                        <path
-                                                            fillRule="evenodd"
-                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                    </svg>
-                                                </div>
-                                                <div className="ml-3">
-                                                    <p className="text-sm font-medium text-green-800">Attendance submitted successfully!</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
 
                                     {/* Error Message */}
                                     {submitError && (

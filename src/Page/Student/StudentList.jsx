@@ -152,7 +152,7 @@ export default function StudentList() {
   }
 
   return (
-    <div className=" ">
+    <div className="p-4">
       {/* Header */}
       <div className="space-y-6 py-5">
         <div className="flex items-center justify-between">

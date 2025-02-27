@@ -27,7 +27,7 @@ const Home = () => {
 
 
   return (
-    <div>
+    <div className="p-4">
       <div className="space-y-6 py-5">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>

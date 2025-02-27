@@ -1,43 +1,60 @@
-import { useState } from "react"
+import { useState, useEffect } from "react";
 import useAuthContext from "../../Auth/Context/useAuthContext";
 import { Contexts } from "../../Auth/Context/Context";
 
 const ProfileSection = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState("John Doe");
-  // const [email] = useState();
-  const [subject, setSubject] = useState("Math");
-  const [pin, setPin] = useState("1234");
+  const [loading, setLoading] = useState(true);
+  const [name, setName] = useState("");
+  const [subject, setSubject] = useState("");
+  const [pin, setPin] = useState("");
   const [oldPin, setOldPin] = useState("");
   const [newPin, setNewPin] = useState("");
-  const {user} = useAuthContext(Contexts);
-  console.log(user?.email)
+  const { user } = useAuthContext(Contexts);
   const email = user?.email;
 
-  const handleEdit = () => {
-    setIsEditing(true)
-  }
+  useEffect(() => {
+    // API থেকে ইউজারের তথ্য লোড করা
+    fetch("https://sheetdb.io/api/v1/euy38wx992nlx")
+      .then((res) => res.json())
+      .then((data) => {
+        setName(data.name || "");
+        setSubject(data.subject || "");
+        setPin(data.pin || "");
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching profile data:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  const handleEdit = () => setIsEditing(true);
 
   const handleSave = () => {
     if (oldPin === pin) {
-      setPin(newPin)
-      setIsEditing(false)
-      setOldPin("")
-      setNewPin("")
+      setPin(newPin);
+      setIsEditing(false);
+      setOldPin("");
+      setNewPin("");
     } else {
-      alert("Incorrect old PIN")
+      alert("Incorrect old PIN");
     }
-  }
+  };
 
   const handleCancel = () => {
-    setIsEditing(false)
-    setOldPin("")
-    setNewPin("")
+    setIsEditing(false);
+    setOldPin("");
+    setNewPin("");
+  };
+
+  if (loading) {
+    return <p className="text-center text-gray-600">Loading...</p>;
   }
 
   return (
     <div className="">
-       <div className="space-y-6 py-5">
+      <div className="space-y-6 py-5">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-800">Profile</h1>
         </div>
@@ -104,14 +121,14 @@ const ProfileSection = () => {
             <button
               type="button"
               onClick={handleCancel}
-              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleSave}
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition duration-150"
             >
               Save Changes
             </button>
@@ -139,15 +156,14 @@ const ProfileSection = () => {
           </div>
           <button
             onClick={handleEdit}
-            className="mt-6 w-full px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+            className="mt-6 w-full px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition duration-150"
           >
             Edit Profile
           </button>
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ProfileSection
-
+export default ProfileSection;

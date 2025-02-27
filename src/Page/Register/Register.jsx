@@ -2,7 +2,6 @@ import { useState } from 'react';
 import RegisterForm from '../../Auth/Login/SignUp';
 import LoginForm from '../../Auth/Login/Login';
 import ForgotPassword from '../../Auth/Login/ForgetPass';
-import ForgotPin from '../../Auth/Login/ForgetPin';
 
 const Register = () => {
     const [currentPage, setCurrentPage] = useState("login");
@@ -15,8 +14,6 @@ const Register = () => {
           return <LoginForm onNavigate={setCurrentPage} />;
         case "forgotPassword":
           return <ForgotPassword onNavigate={setCurrentPage} />;
-        case "forgotPin":
-          return <ForgotPin onNavigate={setCurrentPage} />;
         default:
           return <LoginForm onNavigate={setCurrentPage} />;
       }
