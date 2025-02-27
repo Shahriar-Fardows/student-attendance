@@ -88,9 +88,10 @@ const Sidebar = () => {
         {/* Bottom Buttons Section */}
         <div className="border-t border-slate-200 dark:border-gray-700 p-4 space-y-3">
           {/* App Download Button */}
-
-         
-          <Link to='https://drive.google.com/file/d/1ytWmnupkdYL_bxd0ASyAM4Ucbp8E8qgC/view?usp=sharing' target="_blank">
+          <Link
+            to="#"
+            onClick={() => window.open("https://drive.google.com/file/d/1ytWmnupkdYL_bxd0ASyAM4Ucbp8E8qgC/view?usp=sharing", "_blank")}
+          >
             <button className="inline-flex w-full h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-emerald-50 dark:bg-emerald-900/20 px-6 text-sm font-medium tracking-wide text-emerald-500 dark:text-emerald-400 transition duration-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-300 focus:bg-emerald-200 focus:text-emerald-700 focus-visible:outline-none">
               <span className="relative">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
@@ -100,10 +101,6 @@ const Sidebar = () => {
               <span>App Download</span>
             </button>
           </Link>
-          
-
-
-
           {/* Logout Button */}
           <button
             onClick={() => { LogOut() }}
