@@ -1,13 +1,18 @@
 import { useState } from "react"
+import useAuthContext from "../../Auth/Context/useAuthContext";
+import { Contexts } from "../../Auth/Context/Context";
 
 const ProfileSection = () => {
-  const [isEditing, setIsEditing] = useState(false)
-  const [name, setName] = useState("John Doe")
-  const [email] = useState("john@example.com")
-  const [subject, setSubject] = useState("Math")
-  const [pin, setPin] = useState("1234")
-  const [oldPin, setOldPin] = useState("")
-  const [newPin, setNewPin] = useState("")
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState("John Doe");
+  // const [email] = useState();
+  const [subject, setSubject] = useState("Math");
+  const [pin, setPin] = useState("1234");
+  const [oldPin, setOldPin] = useState("");
+  const [newPin, setNewPin] = useState("");
+  const {user} = useAuthContext(Contexts);
+  console.log(user?.email)
+  const email = user?.email;
 
   const handleEdit = () => {
     setIsEditing(true)

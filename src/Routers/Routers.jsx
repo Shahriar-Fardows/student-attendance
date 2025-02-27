@@ -6,6 +6,7 @@ import LoadingSpinner from "../Shared/LoadingSpinner";
 import Register from "../Page/Register/Register";
 import Profile from "../Page/Profile/Profile";
 import StudentList from "../Page/Student/StudentList";
+import PrivetRoute from "./PrivetRoute";
 
 // Define the wait function
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -26,25 +27,31 @@ const Routers = createBrowserRouter([
             {
                 path: "/",
                 element: (
-                  <Suspense fallback={<LoadingSpinner />}>
+                  <PrivetRoute>
+                    <Suspense fallback={<LoadingSpinner />}>
                     <Home />
                   </Suspense>
+                  </PrivetRoute>
                 ),
             },
             {
                 path: "/profile",
                 element: (
+                  <PrivetRoute>
                   <Suspense fallback={<LoadingSpinner />}>
                     <Profile />
                   </Suspense>
+                  </PrivetRoute>
                 ),
             },
             {
                 path: "/student_list",
                 element: (
+                  <PrivetRoute>
                   <Suspense fallback={<LoadingSpinner />}>
                     <StudentList />
                   </Suspense>
+                  </PrivetRoute>
                 ),
             },
             

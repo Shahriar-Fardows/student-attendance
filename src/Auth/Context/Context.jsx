@@ -55,6 +55,7 @@ const Context = ({children}) => {
     const LogOut = () => {
         return signOut(auth);
     }
+
     const info = {
         user,
         loading,
@@ -64,10 +65,6 @@ const Context = ({children}) => {
         forgotPassword,
         LogOut
     }
-
-
-    
-
 
     return (
         <Contexts.Provider value={info}>
