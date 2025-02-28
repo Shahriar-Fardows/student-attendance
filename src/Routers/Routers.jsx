@@ -9,6 +9,7 @@ import StudentList from "../Page/Student/StudentList";
 import PrivetRoute from "./PrivetRoute";
 import AttendancePage from "../Page/Attendance/Attendance";
 import ClassReport from "../Page/Class/ClassReport";
+import StudentReport from "../Page/StudentReport/StudentReport";
 
 // Define the wait function
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -62,6 +63,16 @@ const Routers = createBrowserRouter([
                   <PrivetRoute>
                   <Suspense fallback={<LoadingSpinner />}>
                     <AttendancePage />
+                  </Suspense>
+                  </PrivetRoute>
+                ),
+            },
+            {
+                path: "/student-report",
+                element: (
+                  <PrivetRoute>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <StudentReport />
                   </Suspense>
                   </PrivetRoute>
                 ),
