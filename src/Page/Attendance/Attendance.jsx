@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react"
 import Swal from "sweetalert2"
 import LoadingSpinner from "../../Shared/LoadingSpinner"
+import useAuthContext from "../../Auth/Context/useAuthContext"
+import { Contexts } from "../../Auth/Context/Context"
 
 const AttendancePage = () => {
     // State for storing API data
@@ -11,6 +13,8 @@ const AttendancePage = () => {
     const [loading, setLoading] = useState(true)
     const [submitting, setSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState(null)
+    const { user } = useAuthContext(Contexts);
+
 
     // State for filters
     const [departments, setDepartments] = useState([])
@@ -20,16 +24,29 @@ const AttendancePage = () => {
     const [selectedSemester, setSelectedSemester] = useState("")
     const [selectedSection, setSelectedSection] = useState("")
 
+    const loggedInEmail = user?.email;
+
     // Fetch teacher and student data on component mount
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true)
 
-                // Fetch teacher data
-                const teacherResponse = await fetch("https://sheetdb.io/api/v1/euy38wx992nlx")
-                const teacherData = await teacherResponse.json()
-                setTeacher(teacherData[0]) // Assuming the first teacher in the list
+                if (loggedInEmail) {
+                    // Fetch teacher data
+                    const teacherResponse = await fetch("https://sheetdb.io/api/v1/euy38wx992nlx");
+                    const teacherData = await teacherResponse.json();
+                
+                    // Filter teacher by email
+                    const matchedTeacher = teacherData.find(teacher => teacher.email === loggedInEmail);
+                
+                    if (matchedTeacher) {
+                        setTeacher(matchedTeacher);
+                    } else {
+                        console.log("No teacher found with this email.");
+                        setTeacher(null); // No matching teacher found
+                    }
+                }
 
                 // Fetch student data
                 const studentResponse = await fetch("https://sheetdb.io/api/v1/ja0l8nz04bsok")

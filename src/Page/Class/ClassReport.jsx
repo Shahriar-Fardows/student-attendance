@@ -22,7 +22,7 @@ export default function ClassReport() {
 
   // Assuming we get the logged-in user's email from Firebase Auth
   const loggedInEmail = user?.email;
-
+console.log(loggedInEmail , "hel")
   useEffect(() => {
     const fetchData = async () => {
       try {
