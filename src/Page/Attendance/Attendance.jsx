@@ -26,55 +26,80 @@ const AttendancePage = () => {
 
     const loggedInEmail = user?.email;
 
-    // Fetch teacher and student data on component mount
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setLoading(true)
-
+                setLoading(true);
+    
                 if (loggedInEmail) {
                     // Fetch teacher data
                     const teacherResponse = await fetch("https://attendans-server.vercel.app/api/getTeacher");
                     const teacherData = await teacherResponse.json();
-                
+    
                     // Filter teacher by email
                     const matchedTeacher = teacherData.find(teacher => teacher.email === loggedInEmail);
-                
+    
                     if (matchedTeacher) {
                         setTeacher(matchedTeacher);
                     } else {
                         console.log("No teacher found with this email.");
-                        setTeacher(null); // No matching teacher found
+                        setTeacher(null);
                     }
                 }
-
-                // Fetch student data
-                const studentResponse = await fetch("https://sheetdb.io/api/v1/8nv4w9rg5hjjp")
-                const studentData = await studentResponse.json()
-                setStudents(studentData)
-
+    
+                let studentData = [];
+    
+                try {
+                    // প্রথম API থেকে ডেটা ফেচ করার চেষ্টা
+                    const studentResponse = await fetch("https://sheetdb.io/api/v1/8nv4w9rg5hjjp");
+                    if (!studentResponse.ok) {
+                        throw new Error('প্রথম API কল লিমিট শেষ');
+                    }
+                    studentData = await studentResponse.json();
+                    setStudents(studentData);
+                } catch (error) {
+                    console.warn('প্রথম API ব্যর্থ হয়েছে, দ্বিতীয় API কল হচ্ছে...', error.message);
+    
+                    // দ্বিতীয় API থেকে ডেটা ফেচ করার চেষ্টা
+                    try {
+                        const fallbackResponse = await fetch("https://sheetdb.io/api/v1/ja0l8nz04bsok");
+                        if (!fallbackResponse.ok) {
+                            throw new Error('দ্বিতীয় API-ও ব্যর্থ');
+                        }
+                        studentData = await fallbackResponse.json();
+                        setStudents(studentData);
+                    } catch (fallbackError) {
+                        console.error('দ্বিতীয় API-ও কাজ করছে না:', fallbackError.message);
+                    }
+                }
+    
                 // Extract unique departments, semesters, and sections
                 const uniqueDepartments = [
                     ...new Set(studentData.map((student) => student.depertment?.trim() || student["depertment "]?.trim())),
-                ].filter(Boolean)
+                ].filter(Boolean);
+                
                 const uniqueSemesters = [
                     ...new Set(studentData.map((student) => student.semister?.trim() || student["semister"]?.trim())),
-                ].filter(Boolean)
-                const uniqueSections = [...new Set(studentData.map((student) => student.section?.trim()))].filter(Boolean)
-
-                setDepartments(uniqueDepartments)
-                setSemesters(uniqueSemesters)
-                setSections(uniqueSections)
-
-                setLoading(false)
+                ].filter(Boolean);
+                
+                const uniqueSections = [
+                    ...new Set(studentData.map((student) => student.section?.trim())),
+                ].filter(Boolean);
+    
+                setDepartments(uniqueDepartments);
+                setSemesters(uniqueSemesters);
+                setSections(uniqueSections);
+    
+                setLoading(false);
             } catch (error) {
-                console.error("Error fetching data:", error)
-                setLoading(false)
+                console.error("Error fetching data:", error);
+                setLoading(false);
             }
-        }
-
-        fetchData()
-    }, [])
+        };
+    
+        fetchData();
+    }, []);
+    
 
     // Filter students based on selected department, semester, and section
     useEffect(() => {
