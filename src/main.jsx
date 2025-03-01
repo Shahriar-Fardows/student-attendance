@@ -4,14 +4,18 @@ import {RouterProvider} from "react-router-dom";
 import "./index.css";
 import Routers from './Routers/Routers.jsx';
 import Context from './Auth/Context/Context.jsx';
+import { Helmet } from 'react-helmet';
 
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Context>
+     <Helmet>
+     <Context>
     <RouterProvider router={Routers} />
       
     </Context>
+    </Helmet>
+    
   </StrictMode>,
 )

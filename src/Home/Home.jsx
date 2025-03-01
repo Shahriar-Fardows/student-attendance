@@ -5,6 +5,7 @@ import { Contexts } from "../Auth/Context/Context"
 import useAuthContext from "../Auth/Context/useAuthContext"
 import StatCard from "../Components/Card/StatCard"
 import LoadingSpinner from "../Shared/LoadingSpinner"
+import useSEO from "../Hooks/useSEO"
 
 export default function Dashboard() {
   const {user} = useAuthContext(Contexts)
@@ -24,6 +25,19 @@ export default function Dashboard() {
     attendanceRate: 0,
   })
   const [lowAttendanceStudents, setLowAttendanceStudents] = useState([])
+
+  const seoProps = {
+    title: "Presidency University: Best Private University in Dhaka for Students | Admissions Open",
+    description: "Presidency University, located in Dhaka, offers world-class education with a range of undergraduate and postgraduate programs. Explore our diverse courses, modern campus, and supportive faculty to build a successful future. Join a vibrant community of students at Presidency University today!",
+    keywords: "pubstudent, Presidency Student , Presidency student , Presidency Teacher, Presidency University, pub student ,  best private university in Dhaka, Presidency University admission, university in Dhaka, private universities in Bangladesh, student life at Presidency University, undergraduate programs, postgraduate programs, Presidency University courses, higher education Dhaka",
+    canonicalUrl: "https://pubstudent.netlify.app/", // Your website URL
+    ogImage: "https://example.com/images/presidency-university-og-image.jpg", // Replace with actual image
+    twitterHandle: "@presidency_university",
+  };
+
+  // Use the SEO hook
+  useSEO(seoProps);
+
 
   // Assuming we get the logged-in user's email from Firebase Auth
   const loggedInEmail = user?.email // This would come from your Firebase auth
