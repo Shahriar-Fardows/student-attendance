@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { Eye, EyeOff } from 'lucide-react';
 import PropTypes from "prop-types";
-import useAuthContext from "../Context/useAuthContext";
-import Swal from "sweetalert2";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import useAuthContext from "../Context/useAuthContext";
 
 const RegisterForm = ({ onNavigate }) => {
   const navigate = useNavigate();
@@ -104,7 +104,7 @@ const RegisterForm = ({ onNavigate }) => {
     
     createUser(formData.email, formData.password)
       .then(() => {
-        return fetch("https://sheetdb.io/api/v1/euy38wx992nlx", {
+        return fetch("https://attendans-server.vercel.app/api/addTeacher", {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",

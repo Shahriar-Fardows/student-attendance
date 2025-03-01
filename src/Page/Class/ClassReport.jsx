@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react"
-import { FaCalendarAlt, FaChartLine, FaArrowUp, FaArrowDown } from "react-icons/fa"
+import { useEffect, useState } from "react"
+import { FaArrowDown, FaArrowUp, FaCalendarAlt, FaChartLine } from "react-icons/fa"
+import { Contexts } from "../../Auth/Context/Context"
+import useAuthContext from "../../Auth/Context/useAuthContext"
 import StatCard from "../../Components/Card/StatCard"
 import LoadingSpinner from "../../Shared/LoadingSpinner"
-import useAuthContext from "../../Auth/Context/useAuthContext"
-import { Contexts } from "../../Auth/Context/Context"
 
 export default function ClassReport() {
   const [loading, setLoading] = useState(true)
@@ -27,7 +27,7 @@ console.log(loggedInEmail , "hel")
     const fetchData = async () => {
       try {
         // Fetch attendance data
-        const attendanceResponse = await fetch("https://sheetdb.io/api/v1/h8958x35wbymx")
+        const attendanceResponse = await fetch("https://attendans-server.vercel.app/api/Attendance")
         const attendanceData = await attendanceResponse.json()
 
         // Filter attendance data for the current teacher

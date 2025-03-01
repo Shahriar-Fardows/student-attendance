@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react"
-import useAuthContext from "../../Auth/Context/useAuthContext"
+import { useEffect, useState } from "react"
 import { Contexts } from "../../Auth/Context/Context"
+import useAuthContext from "../../Auth/Context/useAuthContext"
 
 const AttendanceCorrectionPage = () => {
   const [teacher, setTeacher] = useState(null)
@@ -16,7 +16,7 @@ const AttendanceCorrectionPage = () => {
   const [searchResults, setSearchResults] = useState([])
   const { user } = useAuthContext(Contexts);
 
-  
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,17 +24,25 @@ const AttendanceCorrectionPage = () => {
         setLoading(true)
 
         // Fetch teacher data
-        const teacherResponse = await fetch("https://sheetdb.io/api/v1/euy38wx992nlx")
-        const teacherData = await teacherResponse.json()
-        setTeacher(teacherData[0]) // Assuming the first teacher in the list
-console.log(teacherData, user?.email)
+        const teacherResponse = await fetch("https://attendans-server.vercel.app/api/getTeacher");
+        const teacherData = await teacherResponse.json();
+
+        // Matching the teacher with user email
+        const matchedTeacher = teacherData.find(teacher => teacher.email === user?.email);
+
+        if (matchedTeacher) {
+          setTeacher(matchedTeacher);
+        } else {
+          console.log("No matching teacher found for this user.");
+        }
+
         // Fetch student data
-        const studentResponse = await fetch("https://sheetdb.io/api/v1/ja0l8nz04bsok")
+        const studentResponse = await fetch("https://sheetdb.io/api/v1/8nv4w9rg5hjjp")
         const studentData = await studentResponse.json()
         setStudents(studentData)
 
         // Fetch attendance data
-        const attendanceResponse = await fetch("https://sheetdb.io/api/v1/h8958x35wbymx")
+        const attendanceResponse = await fetch("https://attendans-server.vercel.app/api/Attendance")
         const attendanceData = await attendanceResponse.json()
         setAttendanceData(attendanceData)
 
@@ -132,7 +140,7 @@ console.log(teacherData, user?.email)
       )
 
       // Submit to SheetDB
-      const response = await fetch("https://sheetdb.io/api/v1/h8958x35wbymx", {
+      const response = await fetch("https://attendans-server.vercel.app/api/Attendance", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -212,15 +220,15 @@ console.log(teacherData, user?.email)
               </thead>
               <tbody>
                 ${student.attendance
-                  .map(
-                    (att) => `
+        .map(
+          (att) => `
                   <tr>
                     <td>${att.date}</td>
                     <td>${att.status}</td>
                   </tr>
                 `,
-                  )
-                  .join("")}
+        )
+        .join("")}
               </tbody>
             </table>
           </div>
@@ -371,11 +379,10 @@ console.log(teacherData, user?.email)
                   <div className="flex justify-end">
                     <button
                       type="button"
-                      className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white ${
-                        submitting
+                      className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white ${submitting
                           ? "bg-blue-400 cursor-not-allowed"
                           : "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                      }`}
+                        }`}
                       onClick={handleSubmit}
                       disabled={submitting}
                     >

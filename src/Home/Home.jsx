@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import { FaUserGraduate, FaUserCheck, FaUserTimes, FaChartLine } from "react-icons/fa"
-import StatCard from "../Components/Card/StatCard"
-import useAuthContext from "../Auth/Context/useAuthContext"
+import { useEffect, useState } from "react"
+import { FaChartLine, FaUserCheck, FaUserGraduate, FaUserTimes } from "react-icons/fa"
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { Contexts } from "../Auth/Context/Context"
+import useAuthContext from "../Auth/Context/useAuthContext"
+import StatCard from "../Components/Card/StatCard"
 import LoadingSpinner from "../Shared/LoadingSpinner"
 
 export default function Dashboard() {
@@ -32,18 +32,18 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         // Fetch teacher data
-        const teacherResponse = await fetch("https://sheetdb.io/api/v1/euy38wx992nlx")
+        const teacherResponse = await fetch("https://attendans-server.vercel.app/api/getTeacher")
         const teacherData = await teacherResponse.json()
         const currentTeacher = teacherData.find((t) => t.email === loggedInEmail)
         setTeacher(currentTeacher)
 
         // Fetch student data
-        const studentResponse = await fetch("https://sheetdb.io/api/v1/ja0l8nz04bsok")
+        const studentResponse = await fetch("https://sheetdb.io/api/v1/8nv4w9rg5hjjp")
         const studentData = await studentResponse.json()
         setStudents(studentData)
 
         // Fetch attendance data
-        const attendanceResponse = await fetch("https://sheetdb.io/api/v1/h8958x35wbymx")
+        const attendanceResponse = await fetch("https://attendans-server.vercel.app/api/Attendance")
         const attendanceData = await attendanceResponse.json()
 
         // Filter attendance data for the current teacher

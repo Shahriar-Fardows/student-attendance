@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import useAuthContext from "../../Auth/Context/useAuthContext";
+import { useEffect, useState } from "react";
 import { Contexts } from "../../Auth/Context/Context";
+import useAuthContext from "../../Auth/Context/useAuthContext";
 
 const ProfileSection = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -15,7 +15,7 @@ const ProfileSection = () => {
 
   useEffect(() => {
     // API থেকে ইউজারের তথ্য লোড করা
-    fetch("https://sheetdb.io/api/v1/euy38wx992nlx")
+    fetch("https://attendans-server.vercel.app/api/getTeacher")
       .then((res) => res.json())
       .then((data) => {
         setName(data.name || "");

@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import LoadingSpinner from "../../Shared/LoadingSpinner"
 
 export default function StudentList() {
@@ -27,7 +27,7 @@ export default function StudentList() {
 
   const fetchStudents = async () => {
     try {
-      const response = await fetch("https://sheetdb.io/api/v1/ja0l8nz04bsok")
+      const response = await fetch("https://sheetdb.io/api/v1/8nv4w9rg5hjjp")
       const data = await response.json()
 
       // Clean the data
@@ -108,7 +108,7 @@ export default function StudentList() {
       }
 
       // First, try to update using the SheetDB API format
-      const response = await fetch("https://sheetdb.io/api/v1/ja0l8nz04bsok/studentId /" + student.studentId, {
+      const response = await fetch("https://sheetdb.io/api/v1/8nv4w9rg5hjjp/studentId /" + student.studentId, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

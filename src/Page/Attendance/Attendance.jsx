@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import Swal from "sweetalert2"
-import LoadingSpinner from "../../Shared/LoadingSpinner"
-import useAuthContext from "../../Auth/Context/useAuthContext"
 import { Contexts } from "../../Auth/Context/Context"
+import useAuthContext from "../../Auth/Context/useAuthContext"
+import LoadingSpinner from "../../Shared/LoadingSpinner"
 
 const AttendancePage = () => {
     // State for storing API data
@@ -34,7 +34,7 @@ const AttendancePage = () => {
 
                 if (loggedInEmail) {
                     // Fetch teacher data
-                    const teacherResponse = await fetch("https://sheetdb.io/api/v1/euy38wx992nlx");
+                    const teacherResponse = await fetch("https://attendans-server.vercel.app/api/getTeacher");
                     const teacherData = await teacherResponse.json();
                 
                     // Filter teacher by email
@@ -49,7 +49,7 @@ const AttendancePage = () => {
                 }
 
                 // Fetch student data
-                const studentResponse = await fetch("https://sheetdb.io/api/v1/ja0l8nz04bsok")
+                const studentResponse = await fetch("https://sheetdb.io/api/v1/8nv4w9rg5hjjp")
                 const studentData = await studentResponse.json()
                 setStudents(studentData)
 
@@ -141,7 +141,7 @@ const AttendancePage = () => {
             const formattedData = { data: attendanceData }
 
             // Submit to SheetDB
-            const response = await fetch("https://sheetdb.io/api/v1/h8958x35wbymx", {
+            const response = await fetch("https://attendans-server.vercel.app/api/Attendance", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
