@@ -27,7 +27,7 @@ console.log(loggedInEmail , "hel")
     const fetchData = async () => {
       try {
         // Fetch attendance data
-        const attendanceResponse = await fetch("https://attendans-server.vercel.app/api/Attendance")
+        const attendanceResponse = await fetch("https://attandance-production.up.railway.app/api/Attendance")
         const attendanceData = await attendanceResponse.json()
 
         // Filter attendance data for the current teacher

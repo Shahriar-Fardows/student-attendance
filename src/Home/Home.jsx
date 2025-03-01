@@ -32,7 +32,7 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         // Fetch teacher data
-        const teacherResponse = await fetch("https://attendans-server.vercel.app/api/getTeacher")
+        const teacherResponse = await fetch("https://attandance-production.up.railway.app/api/getTeacher")
         const teacherData = await teacherResponse.json()
         const currentTeacher = teacherData.find((t) => t.email === loggedInEmail)
         setTeacher(currentTeacher)
@@ -43,7 +43,7 @@ export default function Dashboard() {
         setStudents(studentData)
 
         // Fetch attendance data
-        const attendanceResponse = await fetch("https://attendans-server.vercel.app/api/Attendance")
+        const attendanceResponse = await fetch("https://attandance-production.up.railway.app/api/Attendance")
         const attendanceData = await attendanceResponse.json()
 
         // Filter attendance data for the current teacher

@@ -15,7 +15,7 @@ const ProfileSection = () => {
 
   useEffect(() => {
     // API থেকে ইউজারের তথ্য লোড করা
-    fetch("https://attendans-server.vercel.app/api/getTeacher")
+    fetch("https://attandance-production.up.railway.app/api/getTeacher")
       .then((res) => res.json())
       .then((data) => {
         setName(data.name || "");

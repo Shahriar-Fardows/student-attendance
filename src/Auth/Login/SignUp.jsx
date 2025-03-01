@@ -104,7 +104,7 @@ const RegisterForm = ({ onNavigate }) => {
     
     createUser(formData.email, formData.password)
       .then(() => {
-        return fetch("https://attendans-server.vercel.app/api/addTeacher", {
+        return fetch("https://attandance-production.up.railway.app/api/addTeacher", {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",

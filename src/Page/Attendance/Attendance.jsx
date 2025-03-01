@@ -29,11 +29,14 @@ const AttendancePage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setLoading(true);
+                setLoading(true); // Start loading
     
                 if (loggedInEmail) {
                     // Fetch teacher data
-                    const teacherResponse = await fetch("https://attendans-server.vercel.app/api/getTeacher");
+                    const teacherResponse = await fetch("https://attandance-production.up.railway.app/api/getTeacher");
+                    if (!teacherResponse.ok) {
+                        throw new Error("Failed to fetch teacher data");
+                    }
                     const teacherData = await teacherResponse.json();
     
                     // Filter teacher by email
@@ -50,7 +53,7 @@ const AttendancePage = () => {
                 let studentData = [];
     
                 try {
-                    // প্রথম API থেকে ডেটা ফেচ করার চেষ্টা
+                    // First API fetch attempt
                     const studentResponse = await fetch("https://sheetdb.io/api/v1/8nv4w9rg5hjjp");
                     if (!studentResponse.ok) {
                         throw new Error('প্রথম API কল লিমিট শেষ');
@@ -60,7 +63,7 @@ const AttendancePage = () => {
                 } catch (error) {
                     console.warn('প্রথম API ব্যর্থ হয়েছে, দ্বিতীয় API কল হচ্ছে...', error.message);
     
-                    // দ্বিতীয় API থেকে ডেটা ফেচ করার চেষ্টা
+                    // Fallback to the second API if the first fails
                     try {
                         const fallbackResponse = await fetch("https://sheetdb.io/api/v1/ja0l8nz04bsok");
                         if (!fallbackResponse.ok) {
@@ -77,11 +80,11 @@ const AttendancePage = () => {
                 const uniqueDepartments = [
                     ...new Set(studentData.map((student) => student.depertment?.trim() || student["depertment "]?.trim())),
                 ].filter(Boolean);
-                
+    
                 const uniqueSemesters = [
                     ...new Set(studentData.map((student) => student.semister?.trim() || student["semister"]?.trim())),
                 ].filter(Boolean);
-                
+    
                 const uniqueSections = [
                     ...new Set(studentData.map((student) => student.section?.trim())),
                 ].filter(Boolean);
@@ -90,15 +93,16 @@ const AttendancePage = () => {
                 setSemesters(uniqueSemesters);
                 setSections(uniqueSections);
     
-                setLoading(false);
+                setLoading(false); // End loading
             } catch (error) {
                 console.error("Error fetching data:", error);
-                setLoading(false);
+                setLoading(false); // End loading even in case of error
             }
         };
     
         fetchData();
-    }, []);
+    }, [loggedInEmail]); // Add loggedInEmail as a dependency to refetch when email changes
+    
     
 
     // Filter students based on selected department, semester, and section
@@ -166,7 +170,7 @@ const AttendancePage = () => {
             const formattedData = { data: attendanceData }
 
             // Submit to SheetDB
-            const response = await fetch("https://attendans-server.vercel.app/api/Attendance", {
+            const response = await fetch("https://attandance-production.up.railway.app/api/Attendance", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

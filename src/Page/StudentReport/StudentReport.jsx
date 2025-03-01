@@ -24,7 +24,7 @@ const AttendanceCorrectionPage = () => {
         setLoading(true)
 
         // Fetch teacher data
-        const teacherResponse = await fetch("https://attendans-server.vercel.app/api/getTeacher");
+        const teacherResponse = await fetch("https://attandance-production.up.railway.app/api/getTeacher");
         const teacherData = await teacherResponse.json();
 
         // Matching the teacher with user email
@@ -42,7 +42,7 @@ const AttendanceCorrectionPage = () => {
         setStudents(studentData)
 
         // Fetch attendance data
-        const attendanceResponse = await fetch("https://attendans-server.vercel.app/api/Attendance")
+        const attendanceResponse = await fetch("https://attandance-production.up.railway.app/api/Attendance")
         const attendanceData = await attendanceResponse.json()
         setAttendanceData(attendanceData)
 
@@ -140,7 +140,7 @@ const AttendanceCorrectionPage = () => {
       )
 
       // Submit to SheetDB
-      const response = await fetch("https://attendans-server.vercel.app/api/Attendance", {
+      const response = await fetch("https://attandance-production.up.railway.app/api/Attendance", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
