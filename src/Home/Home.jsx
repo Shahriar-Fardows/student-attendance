@@ -78,7 +78,7 @@ export default function Dashboard() {
     }
 
     fetchData()
-  }, []) // Removed loggedInEmail from dependencies
+  }, [loggedInEmail]) // Removed loggedInEmail from dependencies
 
   const calculateStats = (studentData, attendanceData, teacher) => {
     // For now, show all attendance data instead of filtering by date
