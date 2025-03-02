@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaCalendarAlt, FaChartLine, FaArrowUp, FaArrowDown } from "react-icons/fa"
 import StatCard from "../../Components/Card/StatCard"
+import LoadingSpinner from "../../Shared/LoadingSpinner"
 
 export default function ClassReport() {
   const [loading, setLoading] = useState(true)
@@ -111,7 +112,7 @@ export default function ClassReport() {
     setDailyRecords(dailyRecords)
   }
 
-  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>
+  if (loading) return <LoadingSpinner />
   if (error) return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>
 
   return (
