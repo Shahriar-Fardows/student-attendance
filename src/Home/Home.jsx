@@ -1,21 +1,17 @@
-import { useEffect, useState } from "react"
-import { FaChartLine, FaUserCheck, FaUserGraduate, FaUserTimes } from "react-icons/fa"
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
-import { Contexts } from "../Auth/Context/Context"
-import useAuthContext from "../Auth/Context/useAuthContext"
+"use client"
+
+import { useState, useEffect } from "react"
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { FaUserGraduate, FaUserCheck, FaUserTimes, FaChartLine } from "react-icons/fa"
 import StatCard from "../Components/Card/StatCard"
+import useAuthContext from "../Auth/Context/useAuthContext"
+import { Contexts } from "../Auth/Context/Context"
 import LoadingSpinner from "../Shared/LoadingSpinner"
-// import useSEO from "../Hooks/useSEO"
 
 export default function Dashboard() {
-  const {user} = useAuthContext(Contexts)
   const [teacher, setTeacher] = useState(null)
-  const [students, setStudents] = useState([])
-  console.log(students.length ? [{ name: "Hidden", age: "N/A" }] : students);
-
   const [attendance, setAttendance] = useState([])
-  console.log(btoa(JSON.stringify(attendance)));
-
+  console.log(attendance.length ? [{ name: "CSE", age: "N/A" }] : attendance);
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [stats, setStats] = useState({
@@ -27,9 +23,8 @@ export default function Dashboard() {
   const [lowAttendanceStudents, setLowAttendanceStudents] = useState([])
 
   
-
-
   // Assuming we get the logged-in user's email from Firebase Auth
+  const {user} = useAuthContext(Contexts)
   const loggedInEmail = user?.email // This would come from your Firebase auth
 
   useEffect(() => {
@@ -41,22 +36,22 @@ export default function Dashboard() {
         const currentTeacher = teacherData.find((t) => t.email === loggedInEmail)
         setTeacher(currentTeacher)
 
-        // Fetch student data
-        const studentResponse = await fetch("https://sheetdb.io/api/v1/8nv4w9rg5hjjp")
-        const studentData = await studentResponse.json()
-        setStudents(studentData)
-
         // Fetch attendance data
         const attendanceResponse = await fetch("https://attandance-production.up.railway.app/api/Attendance")
         const attendanceData = await attendanceResponse.json()
 
+        // Extract attendance records from nested data structure
+        const allAttendanceRecords = attendanceData.reduce((acc, record) => {
+          return [...acc, ...record.data]
+        }, [])
+
         // Filter attendance data for the current teacher
-        const teacherAttendance = attendanceData.filter((a) => a.teacherEmail === loggedInEmail)
+        const teacherAttendance = allAttendanceRecords.filter((a) => a.teacherEmail === loggedInEmail)
         setAttendance(teacherAttendance)
 
         // Calculate statistics
         if (currentTeacher) {
-          calculateStats(studentData, teacherAttendance, currentTeacher)
+          calculateStats(teacherAttendance)
         }
 
         setLoading(false)
@@ -68,22 +63,23 @@ export default function Dashboard() {
     }
 
     fetchData()
-  }, [loggedInEmail]) // Removed loggedInEmail from dependencies
+  }, [loggedInEmail])
 
-  const calculateStats = (studentData, attendanceData, teacher) => {
-    // For now, show all attendance data instead of filtering by date
-    const todayAttendance = attendanceData
-    console.log(btoa(JSON.stringify(teacher)));
+  const calculateStats = (attendanceData) => {
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split("T")[0]
 
+    // Filter attendance records for today
+    const todayAttendance = attendanceData.filter((a) => a.date === today)
 
     // Count present and absent students today
     const presentToday = todayAttendance.filter((a) => a.status === "present").length
     const absentToday = todayAttendance.filter((a) => a.status === "absent").length
 
-    // Calculate total students for this teacher's subject
+    // Calculate total students
     const totalStudents = new Set(attendanceData.map((a) => a.studentId)).size
 
-    // Fix attendance rate calculation to avoid NaN
+    // Calculate attendance rate
     const attendanceRate =
       presentToday + absentToday > 0 ? Math.round((presentToday / (presentToday + absentToday)) * 100) : 0
 
@@ -94,19 +90,22 @@ export default function Dashboard() {
       attendanceRate,
     })
 
-    // Calculate attendance rate per student
+    // Calculate attendance per student
     const studentAttendanceMap = {}
 
     // Initialize with all students
-    studentData.forEach((student) => {
-      studentAttendanceMap[student.studentId] = {
-        studentId: student.studentId,
-        name: student.name,
-        department: student.depertment,
-        semester: student.semister,
-        section: student.section,
+    const uniqueStudents = [...new Set(attendanceData.map((record) => record.studentId))]
+    uniqueStudents.forEach((studentId) => {
+      const studentRecord = attendanceData.find((record) => record.studentId === studentId)
+      studentAttendanceMap[studentId] = {
+        studentId: studentId,
+        name: studentRecord.name,
+        department: studentRecord.department,
+        semester: studentRecord.semester,
+        section: studentRecord.section,
         totalClasses: 0,
         presentCount: 0,
+        absentCount: 0,
         attendanceRate: 0,
       }
     })
@@ -118,27 +117,43 @@ export default function Dashboard() {
         studentAttendanceMap[studentId].totalClasses++
         if (record.status === "present") {
           studentAttendanceMap[studentId].presentCount++
+        } else {
+          studentAttendanceMap[studentId].absentCount++
         }
       }
     })
 
-    // Calculate attendance rate for each student
-    Object.values(studentAttendanceMap).forEach((student) => {
-      if (student.totalClasses > 0) {
+    // Calculate attendance rate and filter students with absences
+    const studentsWithAbsences = Object.values(studentAttendanceMap)
+      .map((student) => {
         student.attendanceRate = Math.round((student.presentCount / student.totalClasses) * 100)
-      }
-    })
+        return student
+      })
+      .filter((student) => student.absentCount > 0) // Only include students with absences
+      .sort((a, b) => {
+        // First sort by absent count (highest first)
+        if (b.absentCount !== a.absentCount) {
+          return b.absentCount - a.absentCount
+        }
+        // If absent counts are equal, sort by attendance rate (lowest first)
+        return a.attendanceRate - b.attendanceRate
+      })
+      .slice(0, 5) // Take top 5 most absent students
 
-    // Sort students by attendance rate (ascending) and take the lowest 5
-    const sortedStudents = Object.values(studentAttendanceMap)
-      .filter((student) => student.totalClasses > 0)
-      .sort((a, b) => a.attendanceRate - b.attendanceRate)
-      .slice(0, 5)
+    // Add debug logging
+    console.log(
+      "Students with absences:",
+      studentsWithAbsences.map((s) => ({
+        name: s.name,
+        absences: s.absentCount,
+        rate: s.attendanceRate,
+      })),
+    )
 
-    setLowAttendanceStudents(sortedStudents)
+    setLowAttendanceStudents(studentsWithAbsences)
   }
 
-  if (loading) return <LoadingSpinner/>;
+  if (loading) return <LoadingSpinner/>
   if (error) return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>
   if (!teacher) return <div className="flex justify-center items-center h-screen">Teacher not found</div>
 
@@ -217,6 +232,7 @@ export default function Dashboard() {
                   <th className="py-2 px-4 text-left">Department</th>
                   <th className="py-2 px-4 text-left">Semester</th>
                   <th className="py-2 px-4 text-left">Section</th>
+                  <th className="py-2 px-4 text-left">Absences</th>
                   <th className="py-2 px-4 text-left">Attendance</th>
                 </tr>
               </thead>
@@ -228,6 +244,7 @@ export default function Dashboard() {
                     <td className="py-2 px-4">{student.department}</td>
                     <td className="py-2 px-4">{student.semester}</td>
                     <td className="py-2 px-4">{student.section}</td>
+                    <td className="py-2 px-4 font-semibold text-red-600">{student.absentCount} classes</td>
                     <td className="py-2 px-4">
                       <div className="flex items-center">
                         <div className="w-full bg-gray-200 rounded-full h-2.5">
@@ -255,5 +272,3 @@ export default function Dashboard() {
     </div>
   )
 }
-
-

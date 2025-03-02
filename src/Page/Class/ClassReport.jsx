@@ -1,16 +1,12 @@
-import { useEffect, useState } from "react"
-import { FaArrowDown, FaArrowUp, FaCalendarAlt, FaChartLine } from "react-icons/fa"
-import { Contexts } from "../../Auth/Context/Context"
-import useAuthContext from "../../Auth/Context/useAuthContext"
+import { useState, useEffect } from "react"
+import { FaCalendarAlt, FaChartLine, FaArrowUp, FaArrowDown } from "react-icons/fa"
 import StatCard from "../../Components/Card/StatCard"
-import LoadingSpinner from "../../Shared/LoadingSpinner"
 
 export default function ClassReport() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [attendance, setAttendance] = useState([])
-  console.log(attendance.length ? [{ name: "Fuck you bro ! Fuck You ", age: "N/A" }] : attendance);
-  const { user } = useAuthContext(Contexts);
+  console.log(attendance.length ? [{ name: "Hidden", age: "N/A" }] : attendance);
 
   const [stats, setStats] = useState({
     totalClasses: 0,
@@ -21,8 +17,8 @@ export default function ClassReport() {
   const [dailyRecords, setDailyRecords] = useState([])
 
   // Assuming we get the logged-in user's email from Firebase Auth
-  const loggedInEmail = user?.email;
-console.log(loggedInEmail , "hel")
+  const loggedInEmail = "shahriarfardows@gmail.com"
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,8 +26,13 @@ console.log(loggedInEmail , "hel")
         const attendanceResponse = await fetch("https://attandance-production.up.railway.app/api/Attendance")
         const attendanceData = await attendanceResponse.json()
 
+        // Extract attendance records from nested data structure
+        const allAttendanceRecords = attendanceData.reduce((acc, record) => {
+          return [...acc, ...record.data]
+        }, [])
+
         // Filter attendance data for the current teacher
-        const teacherAttendance = attendanceData.filter((a) => a.teacherEmail === loggedInEmail)
+        const teacherAttendance = allAttendanceRecords.filter((a) => a.teacherEmail === loggedInEmail)
         setAttendance(teacherAttendance)
 
         // Process the attendance data
@@ -76,7 +77,7 @@ console.log(loggedInEmail , "hel")
     // Convert grouped data to array and sort by date
     const dailyRecords = Object.entries(groupedByDate)
       .map(([date, data]) => ({
-        date: formatDate(date),
+        date,
         ...data,
       }))
       .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -110,17 +111,7 @@ console.log(loggedInEmail , "hel")
     setDailyRecords(dailyRecords)
   }
 
-  const formatDate = (dateString) => {
-    // Convert Excel date number to JS date
-    const date = new Date((dateString - 25569) * 86400 * 1000)
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })
-  }
-
-  if (loading) return <LoadingSpinner/>
+  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>
   if (error) return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>
 
   return (
@@ -187,7 +178,7 @@ console.log(loggedInEmail , "hel")
               <tbody className="bg-white divide-y divide-gray-200">
                 {dailyRecords.map((record, index) => (
                   <tr key={index} className="hover:bg-gray-50">
-                    <td className="py-4 px-6 text-sm text-gray-900">{record.date}</td>
+                    <td className="py-4 px-6 text-sm text-gray-900">{new Date(record.date).toLocaleDateString()}</td>
                     <td className="py-4 px-6 text-sm text-gray-900">{record.present}</td>
                     <td className="py-4 px-6 text-sm text-gray-900">{record.absent}</td>
                     <td className="py-4 px-6">
@@ -217,5 +208,4 @@ console.log(loggedInEmail , "hel")
     </div>
   )
 }
-
 

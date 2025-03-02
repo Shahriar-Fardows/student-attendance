@@ -10,6 +10,7 @@ import PrivetRoute from "./PrivetRoute";
 import AttendancePage from "../Page/Attendance/Attendance";
 import ClassReport from "../Page/Class/ClassReport";
 import StudentReport from "../Page/StudentReport/StudentReport";
+import AttendanceForm from "../Page/Attendance/AddAttendance";
 
 // Define the wait function
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -63,6 +64,16 @@ const Routers = createBrowserRouter([
                   <PrivetRoute>
                   <Suspense fallback={<LoadingSpinner />}>
                     <AttendancePage />
+                  </Suspense>
+                  </PrivetRoute>
+                ),
+            },
+            {
+                path: "/add-attendance",
+                element: (
+                  <PrivetRoute>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <AttendanceForm />
                   </Suspense>
                   </PrivetRoute>
                 ),
